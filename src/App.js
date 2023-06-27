@@ -35,7 +35,7 @@ export default class App extends Component {
                   key="business"
                   pageSize={5}
                   country="in"
-                  category="business"
+                  category="Business"
                 />
               }
             ></Route>
@@ -46,7 +46,7 @@ export default class App extends Component {
                   key="entertainment"
                   pageSize={5}
                   country="in"
-                  category="entertainment"
+                  category="Entertainment"
                 />
               }
             ></Route>
@@ -57,7 +57,7 @@ export default class App extends Component {
                   key="health"
                   pageSize={5}
                   country="in"
-                  category="health"
+                  category="Health"
                 />
               }
             ></Route>
@@ -68,7 +68,7 @@ export default class App extends Component {
                   key="science"
                   pageSize={5}
                   country="in"
-                  category="science"
+                  category="Science"
                 />
               }
             ></Route>
@@ -79,7 +79,7 @@ export default class App extends Component {
                   key="sports"
                   pageSize={5}
                   country="in"
-                  category="sports"
+                  category="Sports"
                 />
               }
             ></Route>
@@ -90,7 +90,7 @@ export default class App extends Component {
                   key="technology"
                   pageSize={5}
                   country="in"
-                  category="technology"
+                  category="Technology"
                 />
               }
             ></Route>
