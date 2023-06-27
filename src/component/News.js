@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Newsitem from "./Newsitem";
 import Spinner from "./Spinner";
 import PropTypes from 'prop-types'
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 
@@ -23,20 +24,22 @@ export class News extends Component {
     super(props);
     this.state = {
       articles: [],
-      loading: false,
+      loading: true,
       page: 1,
+      totalResult:0,
     };
     document.title= `${this.props.category} -  Related News`
   }  
   async updateNews(){
     const url =
     `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=6ece2eea7b4b4adcb91a3fd5308067b8&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-    this.setState({loading:true});
+  
   let data = await fetch(url);
   let parseddata = await data.json();
   console.log(parseddata);
   this.setState({ articles: parseddata.articles,
   loading:false ,
+  totalResult: parseddata.totalResult,
 });
   }
 
@@ -44,24 +47,39 @@ export class News extends Component {
  this.updateNews()
   };
   
-  previouspage = async () => {
+
+  fetchMoreData = async() => {
+  this.setState({page: this.state.page+1})
+  const url =
+  `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=6ece2eea7b4b4adcb91a3fd5308067b8&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+  this.setState({loading:true});
+let data = await fetch(url);
+let parseddata = await data.json();
+console.log(parseddata);
+this.setState({ articles: this.state.articles.concat(parseddata.articles),
+loading:true ,
+totalResult: parseddata.totalResult,
+})
   
-    this.setState({page:this.state.page-1})
-    this.updateNews()
-  };
-  nextpage = async () => {
-  
-    this.setState({page:this.state.page+1}) 
-    this.updateNews()
+
   };
 
   render() {
     return (
-      <div className="container my-3">
+      <>
         <h1 className="text-center">Everyday-News Top Headlines On {this.props.category} category</h1>
-        {this.state.loading && <Spinner/>}
+      
+        <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length!=this.state.totalResult}
+          loader={<Spinner/>}
+        >
+          <div className="container">
+            
+         
         <div className="row">
-          {!this.state.loading && this.state.articles.map((element) => {
+          { this.state.articles.map((element) => {
             return (
               <div className="col-md-4" key={element.url}>
                 <Newsitem
@@ -76,30 +94,16 @@ export class News extends Component {
                   source={element.source.name}
                 />
               </div>
+               
+              
             );
           })}
         </div>
-        <div className="container d-flex justify-content-between">
-          <button
-            disabled={this.state.page <= 1}
-            type="button"
-            className="btn btn-dark"
-            onClick={this.previouspage}
-          >
-            {" "}
-            &larr; previous{" "}
-          </button>
-          <button
-            disabled={this.state.page >= 8}
-            type="button"
-            className="btn btn-dark "
-            onClick={this.nextpage}
-          >
-            {" "}
-            Next &rarr;
-          </button>
         </div>
-      </div>
+        </InfiniteScroll>
+      
+                  </>
+     
     );
   }
 }
